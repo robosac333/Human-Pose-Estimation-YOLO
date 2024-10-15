@@ -1,1 +1,1 @@
-# Human-Pose-Estimation-YOLO
+# Monocular-Human-Pose-Estimation-YOLO
