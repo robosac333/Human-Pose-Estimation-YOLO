@@ -7,6 +7,9 @@
 #include "ImageProcessor.hpp"
 #include "Utils.hpp"
 
+#include <opencv/include/opencv2/opencv.hpp>
+#include <opencv2/tracking.hpp>
+
 /**
  * @class YoloDetector
  * @brief A class for performing object detection using YOLO (You Only Look Once) models.
