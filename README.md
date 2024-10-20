@@ -29,6 +29,8 @@ make -j$(nproc)
 sudo make install
 ```
 
+## Step 2: YoloV11 Model Download and Conversion
+
 - Download the YOLOV11X model [here](https://docs.ultralytics.com/tasks/detect/#models). 
 - To convert the model into an ONNX file use the convert_to_onnx.py file in yolo_classes folder.
 
