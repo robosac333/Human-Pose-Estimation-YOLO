@@ -1,0 +1,2 @@
+yolo_classes/yolo11x.onnx filter=lfs diff=lfs merge=lfs -text
+yolo_classes/yolo11x.pt filter=lfs diff=lfs merge=lfs -text
