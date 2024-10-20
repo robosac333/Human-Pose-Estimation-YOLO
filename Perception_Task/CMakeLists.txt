@@ -1,4 +1,4 @@
-add_library(perception_task STATIC perception_task.cpp)
+add_library(perception_task STATIC YoloDetector.cpp Detection.cpp ImageProcessor.cpp Utils.cpp)
 
 target_include_directories(perception_task PUBLIC 
     ${CMAKE_SOURCE_DIR}/include

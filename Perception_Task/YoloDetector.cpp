@@ -12,8 +12,17 @@ YoloDetector::YoloDetector(const std::string& modelPath, const std::string& onnx
 {}
 
 bool YoloDetector::loadModel() {
-    // Stub implementation
-    return false;
+    std::cout << "Loading YOLO model..." << std::endl;
+    cv::dnn::Net net = cv::dnn::readNetFromONNX(onnxModelPath);
+
+    if (net.empty()) {
+        std::cerr << "Failed to load model." << std::endl;
+        return false;
+    }
+
+    std::cout << "Model loaded successfully." << std::endl;
+
+    return true;
 }
 
 void YoloDetector::trackHuman() {
