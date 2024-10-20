@@ -1,18 +1,13 @@
-import torch
+from ultralytics import YOLO
 
-# Load the model
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-model.eval()
+# Load the YOLO11 model
+model = YOLO("yolo_classes/yolo11x.pt")
 
-# Create dummy input
-dummy_input = torch.randn(1, 3, 640, 640)
+Export the model to ONNX format
+model.export(format="onnx")  # creates 'yolo11n.onnx'
 
-# Export to ONNX
-torch.onnx.export(model, 
-                  dummy_input, 
-                  'yolov5s.onnx', 
-                  opset_version=11,  # Try a lower opset version
-                  input_names=['images'],
-                  output_names=['output'],
-                  dynamic_axes={'images': {0: 'batch_size'}, 'output': {0: 'batch_size'}})
-print("ONNX model saved as yolov5s.onnx")
+# Load the exported ONNX model
+onnx_model = YOLO("yolo_classes/yolo11x.onnx", task="detect")
+
+# Run inference
+results = onnx_model("https://ultralytics.com/images/bus.jpg")
