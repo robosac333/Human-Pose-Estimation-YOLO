@@ -14,13 +14,11 @@ public:
     // Constructor accepting modelPath, configPath, and classesPath
     detectHuman(const std::string& modelPath,
                 const std::string& configPath,
-                const std::string& classesPath,
-                const cv::Mat& image);
+                const std::string& classesPath
+                );
 
     // Perform human detection on an image
-    std::vector<cv::Rect> detectHumans();
-
-    cv::Mat Image;
+    std::vector<cv::Rect> detectHumans(const cv::Mat& Image);
 
     std::vector<cv::Rect> boxes;
 

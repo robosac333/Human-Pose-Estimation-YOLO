@@ -1,3 +1,4 @@
+// Tracker.hpp
 #ifndef TRACKER_HPP
 #define TRACKER_HPP
 
@@ -15,9 +16,9 @@ public:
            const std::string& classesPath,
            const cv::Mat& image);
 
-    void Track();
+    void Track(const cv::Mat& image);
 
-    void updateTrackers(const std::vector<cv::Rect>& detections);
+    void updateTrackers(const std::vector<cv::Rect>& detections, const cv::Mat& Image);
 
     cv::Point3f getLocation(const cv::Rect& rect);
 
@@ -26,3 +27,4 @@ private:
     std::vector<cv::Ptr<cv::Tracker>> trackers;
 
 };
+#endif

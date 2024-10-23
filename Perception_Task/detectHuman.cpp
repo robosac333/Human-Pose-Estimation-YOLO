@@ -2,24 +2,41 @@
 #include <iostream>
 #include <fstream>
 
+
 detectHuman::detectHuman(const std::string& modelPath, 
                         const std::string& configPath, 
-                        const std::string& classesPath,
-                        const cv::Mat& image)
-    : loadModel(modelPath, configPath, classesPath),  // Initialize base class
-      Image(image.clone())  // Initialize Image member
+                        const std::string& classesPath
+                        )
+    : loadModel(modelPath, configPath, classesPath)  // Initialize base class
+    //   Image(image)  // Initialize Image member
 {
     boxes.clear();
     confidences.clear();
 }
 
-std::vector<cv::Rect> detectHuman::detectHumans(){
+std::vector<cv::Rect> detectHuman::detectHumans(const cv::Mat& Image){
+
+    std::cout << "creating blob from image" << Image.size << std::endl;
 
     cv::Mat blob = cv::dnn::blobFromImage(Image, 1/255.0, cv::Size(416, 416), cv::Scalar(0,0,0), true, false);
+
+    // Print blob shape for debugging
+    std::cout << "Blob shape: " << blob.size << std::endl;
+    std::cout << "Blob channels: " << blob.channels() << std::endl;
+
     net.setInput(blob);
 
+    // Verify network layers
+    std::vector<std::string> layerNames = net.getLayerNames();
+    std::cout << "Number of layers: " << std::endl;
+
+
     std::vector<cv::Mat> outs;
+
+
+
     net.forward(outs, net.getUnconnectedOutLayersNames());
+
 
     for (const auto& out : outs) {
         for (int i = 0; i < out.rows; ++i) {

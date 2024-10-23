@@ -83,17 +83,17 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   set(WANT_COVERAGE OFF)
 endif()
 
-if(WANT_COVERAGE)
-  message("Enabling coverage")
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
-  include(CodeCoverage)
-  # The following line come from cmake-modules/CodeCoverage.cmake
-  append_coverage_compiler_flags() # will add "--coverage" compilation flag
-  # Exclude certain directories from coverage analysis
-  set(COVERAGE_EXCLUDES
-    ${PROJECT_BINARY_DIR}
-    )
-endif()
+# if(WANT_COVERAGE)
+#   message("Enabling coverage")
+#   list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+#   include(CodeCoverage)
+#   # The following line come from cmake-modules/CodeCoverage.cmake
+#   append_coverage_compiler_flags() # will add "--coverage" compilation flag
+#   # Exclude certain directories from coverage analysis
+#   set(COVERAGE_EXCLUDES
+#     ${PROJECT_BINARY_DIR}
+#     )
+# endif()
 
 #
 # c++ Boilerplate Modification Starts Here

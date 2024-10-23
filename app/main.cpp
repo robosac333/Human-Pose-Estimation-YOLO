@@ -1,4 +1,5 @@
-#include "../include/loadModel.hpp"
+#include "loadModel.hpp"
+#include "Tracker.hpp"
 #include <opencv2/opencv.hpp>
 #include <string>
 
@@ -14,13 +15,21 @@ int main() {
     std::string config_path = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.cfg";
     std::string coco_path = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/coco.names";
 
-    loadModel detector(
+    // loadModel detector(
+    //     modelPath,
+    //     config_path,
+    //     coco_path);
+
+    // cv::dnn::Net net = detector.loadFromFile();
+    cv::Mat frame;
+
+    Tracker tracker(
         modelPath,
         config_path,
-        coco_path);
+        coco_path,
+        frame);
 
-    detector.loadFromFile();
-    cv::Mat frame;
+    tracker.loadFromFile();
 
     while (true) {
         cap >> frame;
@@ -29,11 +38,13 @@ int main() {
             break;
         }
 
-    //     detector.detectAndTrack(frame);
 
-        cv::imshow("Human Detector and Tracker", frame);
 
-        if (cv::waitKey(30) >= 0) break;
+    tracker.Track(frame);
+
+    cv::imshow("Human Detector and Tracker", frame);
+
+    if (cv::waitKey(30) >= 0) break;
     }
 
     return 0;

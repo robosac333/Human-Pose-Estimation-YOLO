@@ -5,15 +5,17 @@
 Tracker::Tracker(const std::string& modelPath,
            const std::string& configPath,
            const std::string& classesPath,
-           const cv::Mat& image) : detectHuman(modelPath, configPath, classesPath, image)
+           const cv::Mat& image) : detectHuman(modelPath, configPath, classesPath)
            {
 
 
            }
 
-void Tracker::Track() {
-    std::vector<cv::Rect> detections = detectHumans();
-    updateTrackers(detections);
+void Tracker::Track(const cv::Mat& Image) {
+    std::vector<cv::Rect> detections = detectHumans(Image);
+
+    std::cout << "Detected Humans" << std::endl; 
+    updateTrackers(detections , Image);
 
     // Draw bounding boxes for detected humans
     for (const auto& detection : detections) {
@@ -27,7 +29,7 @@ void Tracker::Track() {
                     cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
     }
 }
-void Tracker::updateTrackers(const std::vector<cv::Rect>& detections){
+void Tracker::updateTrackers(const std::vector<cv::Rect>& detections, const cv::Mat& Image){
     // Update existing trackers
     auto it = trackers.begin();
     while (it != trackers.end()) {
@@ -75,8 +77,8 @@ cv::Point3f Tracker::getLocation(const cv::Rect& rect) {
     double centerX = cameraMatrix.at<double>(0, 2);
     double centerY = cameraMatrix.at<double>(1, 2);
     
-    double x = (rect.x + rect.width/2 - centerX) / focalLength;
-    double y = (rect.y + rect.height/2 - centerY) / focalLength;
+    double x = (rect.x + (double)rect.width/2 - centerX) / focalLength;
+    double y = (rect.y + (double)rect.height/2 - centerY) / focalLength;
     double z = focalLength / rect.width;  // Assuming known average human width
 
     return cv::Point3f(x, y, z);

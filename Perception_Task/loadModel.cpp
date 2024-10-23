@@ -6,14 +6,18 @@
 loadModel::loadModel(const std::string& modelPath, const std::string& configPath, const std::string& classesPath)
     : modelPath(modelPath), 
       configPath(configPath),
-      classesPath(classesPath)
-{}
+      classesPath(classesPath){}
+// {cv::dnn::Net net;}
 
 bool loadModel::loadFromFile() {
     net = cv::dnn::readNetFromDarknet(configPath, modelPath);
     if (net.empty()) {
         throw std::runtime_error("Failed to load the model from: " + modelPath);
         return false;
+    }
+    else{
+
+        std::cout<<"Model loaded successfully";
     }
     net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
     net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
