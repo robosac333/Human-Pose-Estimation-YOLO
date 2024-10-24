@@ -1,4 +1,5 @@
 # Monocular-Human-Detection-YOLO
+![CICD Workflow status](https://github.com/robosac333/Monocular-Human-Detection-YOLO/actions/workflows/run-unit-test-and-upload-codecov.yml/badge.svg) [![codecov](https://codecov.io/gh/robosac333/Monocular-Human-Detection-YOLO/branch/main/graph/badge.svg)](https://codecov.io/gh/robosac333/Monocular-Human-Detection-YOLO) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Step 1: OpenCV Installation
 Open a terminal and run the following commands to remove any existing 
