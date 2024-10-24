@@ -70,6 +70,8 @@ sudo make install
   rm -rf build/
 ```
 
+- The video for this Phase implementation can be found [here](https://youtu.be/I4-NO7tivLg?si=6dGpwYZuMBzqrTG6)
+
 # Phase0
 
 Phase 0 focuses on the project proposal and provides information about the Agile Iterative Process (AIP) model to be used for software development throughout the project.
