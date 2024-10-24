@@ -1,7 +1,7 @@
 # Any C++ source files needed to build this target (cpp-test).
 add_executable(cpp-test
   # list of source cpp files:
-  main.cpp
+  # main.cpp
   test.cpp
   )
 

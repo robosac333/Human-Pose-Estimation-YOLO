@@ -32,6 +32,9 @@ sudo make install
 
 ## Step 2: YoloV11 Model Download and Conversion
 
-- Download the YOLOV11X model [here](https://docs.ultralytics.com/tasks/detect/#models). 
-- To convert the model into an ONNX file use the convert_to_onnx.py file in yolo_classes folder.
+- Download the YOLOV3 weights [here](https://drive.google.com/drive/folders/1hTzRYYRm9nEMRbxYX1bqpsGFVuv-hrrX?usp=sharing). 
+
+- We have updated the UML Diagram in the Phase1 to correctly represent functionalities as per the product backlog 
+
+![UML Phase 1](Monocular-Human-Detection-YOLO/Documentation/Phase1/UML_Phase1.png)
 
