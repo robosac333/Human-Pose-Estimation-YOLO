@@ -36,5 +36,46 @@ sudo make install
 
 - We have updated the UML Diagram in the Phase1 to correctly represent functionalities as per the product backlog 
 
-![UML Phase 1](Documentation/Phase1/UML_Phase1.png)
+<p align="center">
+  <img src="Documentation/Phase1/UML_Phase1.png" alt="UML Phase 1" width="50%">
+</p
 
+
+## Step3: Building the Workspace
+
+```bash
+# Configure the project and generate a native build system:
+  # Must re-run this command whenever any CMakeLists.txt file has been changed.
+  cmake -S ./ -B build/
+# Compile and build the project:
+  # rebuild only files that are modified since the last build
+  cmake --build build/
+  # or rebuild everything from scracth
+  cmake --build build/ --clean-first
+  # to see verbose output, do:
+  cmake --build build/ --verbose
+# Run program:
+  ./build/app/shell-app
+# Run tests:
+  cd build/; ctest; cd -
+  # or if you have newer cmake
+  ctest --test-dir build/
+# Build docs:
+  cmake --build build/ --target docs
+  # open a web browser to browse the doc
+  open docs/html/index.html
+# Clean
+  cmake --build build/ --target clean
+# Clean and start over:
+  rm -rf build/
+```
+
+# Phase0
+
+Phase 0 focuses on the project proposal and provides information about the Agile Iterative Process (AIP) model to be used for software development throughout the project.
+
+The Phase 0 project report, located at proposal/Phase 0 Proposal.pdf, outlines a comprehensive plan and vision for the project, detailing the implementation strategies. It covers all the elements of a standard software development plan, offering an in-depth analysis.
+
+The quad chart, found at proposal/Phase 0 Quad Chart.pdf, summarizes key aspects of the project, including the product, stakeholders, capabilities, and success criteria. This chart is a crucial component of the AIP methodology, which will guide the project’s progression.
+
+Additionally, a brief video is embedded below, providing an overview of the project, including details from the report and quad chart. To view the video directly, click on the link provided.
