@@ -2,47 +2,60 @@
 #include <iostream>
 #include <fstream>
 
-
+/**
+ * @brief Constructor for the loadModel class.
+ * 
+ * @param modelPath Path to the model file.
+ * @param configPath Path to the configuration file.
+ * @param classesPath Path to the file containing class labels.
+ */
 loadModel::loadModel(const std::string& modelPath, const std::string& configPath, const std::string& classesPath)
-    : modelPath(modelPath), 
-      configPath(configPath),
-      classesPath(classesPath){}
-// {cv::dnn::Net net;}
+    : model_file_path(modelPath), 
+      config_file_path(configPath),
+      classes_file_path(classesPath) {}
 
+/**
+ * @brief Load the neural network model and class labels from the specified files.
+ * 
+ * @return true if the model and labels were loaded successfully, false otherwise.
+ * 
+ * @throws std::runtime_error if the model or class labels cannot be loaded.
+ */
 bool loadModel::loadFromFile() {
-    net = cv::dnn::readNetFromDarknet(configPath, modelPath);
+    // Load the model from the Darknet configuration and model files
+    net = cv::dnn::readNetFromDarknet(config_file_path, model_file_path);
     if (net.empty()) {
-        throw std::runtime_error("Failed to load the model from: " + modelPath);
-        return false;
+        std::ostringstream errorMsg;
+        errorMsg << "Failed to load the neural network model from the path: " << model_file_path;
+        throw std::runtime_error(errorMsg.str());
     }
-    else{
+    std::cout << "Model has been successfully loaded from: " << model_file_path << std::endl;
 
-        std::cout<<"Model loaded successfully";
-    }
+    // Configure the network to use OpenCV as the backend and run on the CPU
     net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
     net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
-    // Load class names
-    std::ifstream classNamesFile(classesPath);
-    if (classNamesFile.is_open()) {
-        std::string className;
-        while (std::getline(classNamesFile, className)) {
-            classes.push_back(className);
+    // Read class names from the specified file if possible
+    std::ifstream inputFile(classes_file_path);
+    if (inputFile) {
+        std::string lineContent;
+        while (std::getline(inputFile, lineContent)) {
+            classLabels.emplace_back(lineContent);
         }
-    }else {
-    throw std::runtime_error("Failed to load classes");
-    return false;
-}
+    } else {
+        std::ostringstream errorMsg;
+        errorMsg << "Unable to open class names file: " << classes_file_path;
+        throw std::runtime_error(errorMsg.str());
+    }
 
+    // Set up camera matrix with intrinsic parameters and initialize distortion coefficients to zero
+    Camera_Matrix = (cv::Mat_<double>(3, 3) <<
+        1000.0, 0.0, 320.0,
+        0.0, 1000.0, 240.0,
+        0.0, 0.0, 1.0);
+    
+    Dist_Coeffs = cv::Mat::zeros(cv::Size(5, 1), CV_64F);
 
-
-    // Initialize camera matrix and distortion coefficients
-    cameraMatrix = (cv::Mat_<double>(3,3) << 
-        1000, 0, 320,
-        0, 1000, 240,
-        0, 0, 1);
-    distCoeffs = cv::Mat::zeros(5, 1, CV_64F);
+    // Return true indicating successful initialization
     return true;
 }
-
-

@@ -1,4 +1,3 @@
-// loadModel.hpp
 #ifndef LOAD_MODEL_HPP
 #define LOAD_MODEL_HPP
 
@@ -7,32 +6,42 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/tracking.hpp>
 
+/**
+ * @class loadModel
+ * @brief A class to load a deep learning model for object detection.
+ */
 class loadModel {
 public:
-    // Constructor
-    loadModel(const std::string& modelPath, const std::string& configPath, const std::string& classesPath);
+    /**
+     * @brief Constructor for the loadModel class.
+     * 
+     * @param model_file_path Path to the model file.
+     * @param config_file_path Path to the configuration file.
+     * @param classes_file_path Path to the file containing class labels.
+     */
+    loadModel(const std::string& model_file_path , const std::string& config_file_path, const std::string& classes_file_path);
 
+    cv::dnn::Net net; ///< The neural network for object detection.
+    
+    std::vector<std::string> classLabels; ///< Vector storing the class labels.
 
-    cv::dnn::Net net;
-
-    std::vector<std::string> classes;
-
-    // Load the model from a file
+    /**
+     * @brief Load the model from the specified files.
+     * 
+     * @return true if the model was loaded successfully, false otherwise.
+     */
     bool loadFromFile();
 
-    cv::Mat cameraMatrix;
-
-    cv::Mat distCoeffs;
+    cv::Mat Camera_Matrix; ///< Camera intrinsic parameters matrix.
+    
+    cv::Mat Dist_Coeffs; ///< Distortion coefficients matrix.
 
 private:
-    // Path to the loaded model file
-    const std::string modelPath;
-
-    // Flag indicating if the model is loaded
-    const std:: string configPath;
-
-    // Pointer to the model data
-    const std:: string classesPath;
+    const std::string model_file_path; ///< Path to the loaded model file.
+    
+    const std::string config_file_path; ///< Path to the configuration file.
+    
+    const std::string classes_file_path; ///< Path to the class labels file.
 };
 
 #endif // LOAD_MODEL_HPP

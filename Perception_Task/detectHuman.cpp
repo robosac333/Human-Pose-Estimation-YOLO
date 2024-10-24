@@ -45,7 +45,7 @@ std::vector<cv::Rect> detectHuman::detectHumans(const cv::Mat& Image){
             double confidence;
             cv::minMaxLoc(scores, 0, &confidence, 0, &classIdPoint);
             
-            if (confidence > 0.5 && classes[classIdPoint.x] == "person") {
+            if (confidence > 0.5 && classLabels[classIdPoint.x] == "person") {
                 int centerX = static_cast<int>(out.at<float>(i, 0) * Image.cols);
                 int centerY = static_cast<int>(out.at<float>(i, 1) * Image.rows);
                 int width = static_cast<int>(out.at<float>(i, 2) * Image.cols);
