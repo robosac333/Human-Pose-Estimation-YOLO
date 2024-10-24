@@ -36,5 +36,5 @@ sudo make install
 
 - We have updated the UML Diagram in the Phase1 to correctly represent functionalities as per the product backlog 
 
-![UML Phase 1](Monocular-Human-Detection-YOLO/Documentation/Phase1/UML_Phase1.png)
+![UML Phase 1](Documentation/Phase1/UML_Phase1.png)
 
