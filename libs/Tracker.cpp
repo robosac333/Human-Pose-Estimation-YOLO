@@ -105,10 +105,11 @@ cv::Point3f Tracker::getLocation(const cv::Rect& detection) {
 
     float x_coord = x_from_center * z_min_plane / (_focal_length * 1000);
  
- // Correctly assign to cv::Point3f
+    // Correctly assign to cv::Point3f
     coordinates.x = x_coord;          // X coordinate
     coordinates.y = _height;          // Y coordinate (height)
     coordinates.z = z_min_plane;      // Z coordinate (depth)
 
     return coordinates;
 }
+
