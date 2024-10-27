@@ -59,6 +59,10 @@ public:
      */
     cv::Point3f getLocation(const cv::Rect& rect);
 
+    float degrees_to_radians(float deg);
+
+    float radians_to_degrees(float radians);
+
 private:
     std::vector<cv::Ptr<cv::Tracker>> trackers; ///< Vector of OpenCV trackers for multiple humans
 };
