@@ -103,7 +103,7 @@ endif()
 add_subdirectory(libs)
 add_subdirectory(app)
 add_subdirectory(test)
-add_subdirectory(Perception_Task)
+# add_subdirectory(Perception_Task)
 
 # create a target to build documentation
 doxygen_add_docs(docs           # target name
@@ -111,7 +111,7 @@ doxygen_add_docs(docs           # target name
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/libs
   ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_SOURCE_DIR}/Perception_Task
+  # ${PROJECT_SOURCE_DIR}/Perception_Task
   )
 
 # create targets for building code coverage reports

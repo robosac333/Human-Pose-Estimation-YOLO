@@ -1,12 +1,15 @@
+/**
+ * @file test.cpp
+ * @author Navdeep Singh (nsingh19@umd.edu)
+ * @brief Tests for the Human Tracker Implementation
+ * @version 0.1
+ * @date 2023-10-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <gtest/gtest.h>
-
-#include "lib.hpp"
-#include "lib1.hpp"
-
-void function_not_used() {
-  dummy();
-  int notUsed = my_function1(3);
-}
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

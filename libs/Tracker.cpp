@@ -22,16 +22,16 @@ void Tracker::Track(const cv::Mat& Image) {
     updateTrackers(detections, Image);
 
     // Draw bounding boxes and location information for detected humans
-    for (const auto& detection : detections) {
-        cv::rectangle(Image, detection, cv::Scalar(255, 255, 0), 2);
-        cv::Point3f location = getLocation(detection);
-        cv::putText(Image,
-                   "Human: (" + std::to_string(int(location.x)) + ", " +
-                               std::to_string(int(location.y)) + ", " +
-                               std::to_string(int(location.z)) + ")",
-                   cv::Point(detection.x, detection.y - 10),
-                   cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
-    }
+    // for (const auto& detection : detections) {
+    //     // cv::rectangle(Image, detection, cv::Scalar(255, 255, 0), 2);
+    //     cv::Point3f location = getLocation(detection);
+    //     cv::putText(Image,
+    //                "Human: (" + std::to_string(int(location.x)) + ", " +
+    //                            std::to_string(int(location.y)) + ", " +
+    //                            std::to_string(int(location.z)) + ")",
+    //                cv::Point(detection.x, detection.y - 10),
+    //                cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
+    // }
 }
 
 void Tracker::updateTrackers(const std::vector<cv::Rect>& detections, const cv::Mat& Image) {
@@ -44,9 +44,9 @@ void Tracker::updateTrackers(const std::vector<cv::Rect>& detections, const cv::
             cv::rectangle(Image, trackedRect, cv::Scalar(255, 0, 0), 2);
             cv::Point3f location = getLocation(trackedRect);
             cv::putText(Image,
-                       "Tracked: (" + std::to_string(int(location.x)) + ", " +
-                                    std::to_string(int(location.y)) + ", " +
-                                    std::to_string(int(location.z)) + ")",
+                       "Tracked: (" + std::to_string(location.x) + ", " +
+                                    std::to_string(location.y) + ", " +
+                                    std::to_string(location.z) + ")",
                        cv::Point(trackedRect.x, trackedRect.y - 10),
                        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 2);
             ++it;
@@ -76,16 +76,39 @@ void Tracker::updateTrackers(const std::vector<cv::Rect>& detections, const cv::
     }
 }
 
-cv::Point3f Tracker::getLocation(const cv::Rect& rect) {
-    // Calculate 3D position using camera parameters
-    double focalLength = Camera_Matrix.at<double>(0, 0);
-    double centerX = Camera_Matrix.at<double>(0, 2);
-    double centerY = Camera_Matrix.at<double>(1, 2);
-    
-    // Convert pixel coordinates to 3D coordinates
-    double x = (rect.x + (double)rect.width/2 - centerX) / focalLength;
-    double y = (rect.y + (double)rect.height/2 - centerY) / focalLength;
-    double z = focalLength / rect.width; // Assuming known average human width
-    
-    return cv::Point3f(x, y, z);
+float Tracker::degrees_to_radians(float deg) { return deg * M_PI / 180.0; }
+
+float Tracker::radians_to_degrees(float radians) {
+  return radians * (180.0 / M_PI);
+}
+
+cv::Point3f Tracker::getLocation(const cv::Rect& detection) {
+    cv::Point2f current_pixel;
+    current_pixel.x = detection.x + (double)detection.width / 2;
+    current_pixel.y = detection.y + (double)detection.height / 2;
+
+    cv::Point3f coordinates;
+
+    std::vector<int> _resolution = {1280, 720};
+    const float pixel_size = 0.0028;
+    const float _height = 0.762;
+    const float _focal_length = 1.898;
+    const float _vfov = 56.34;    
+
+    float offset_from_center = (current_pixel.y - (static_cast<float>(_resolution[1]) / 2)) * pixel_size;
+
+    float dip_angle = (_vfov / 2) - radians_to_degrees(std::atan2((offset_from_center), (_focal_length)));
+
+    float z_min_plane =_height / tan(degrees_to_radians((_vfov / 2) - dip_angle));
+
+    float x_from_center = (current_pixel.x - 640) * 2.8;
+
+    float x_coord = x_from_center * z_min_plane / (_focal_length * 1000);
+ 
+ // Correctly assign to cv::Point3f
+    coordinates.x = x_coord;          // X coordinate
+    coordinates.y = _height;          // Y coordinate (height)
+    coordinates.z = z_min_plane;      // Z coordinate (depth)
+
+    return coordinates;
 }
