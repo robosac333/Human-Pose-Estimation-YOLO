@@ -24,11 +24,11 @@ loadModel::loadModel(const std::string& modelPath, const std::string& configPath
 bool loadModel::loadFromFile() {
     // Load the model from the Darknet configuration and model files
     net = cv::dnn::readNetFromDarknet(config_file_path, model_file_path);
-    // if (net.empty()) {
-    //     std::ostringstream errorMsg;
-    //     errorMsg << "Failed to load the neural network model from the path: " << model_file_path;
-    //     throw std::runtime_error(errorMsg.str());
-    // }
+    if (net.empty()) {
+        std::ostringstream errorMsg;
+        errorMsg << "Failed to load the neural network model from the path: " << model_file_path;
+        throw std::runtime_error(errorMsg.str());
+    }
     std::cout << "Model has been successfully loaded from: " << model_file_path << std::endl;
 
     // Configure the network to use OpenCV as the backend and run on the CPU
@@ -43,11 +43,11 @@ bool loadModel::loadFromFile() {
             classLabels.emplace_back(lineContent);
         }
     } 
-    // else {
-    //     std::ostringstream errorMsg;
-    //     errorMsg << "Unable to open class names file: " << classes_file_path;
-    //     throw std::runtime_error(errorMsg.str());
-    // }
+    else {
+        std::ostringstream errorMsg;
+        errorMsg << "Unable to open class names file: " << classes_file_path;
+        throw std::runtime_error(errorMsg.str());
+    }
 
     // Set up camera matrix with intrinsic parameters and initialize distortion coefficients to zero
     Camera_Matrix = (cv::Mat_<double>(3, 4) <<
