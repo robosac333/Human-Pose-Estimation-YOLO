@@ -17,8 +17,10 @@ target_include_directories(cpp-test PUBLIC
 target_link_libraries(cpp-test PUBLIC
   # list of libraries:
   gtest
+  gmock
   myLib1
   myLib2
+  perception_task
   )
 
 # Enable CMake’s test runner to discover the tests included in the

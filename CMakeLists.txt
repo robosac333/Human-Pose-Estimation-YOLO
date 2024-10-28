@@ -7,9 +7,9 @@ project(scratch)
 #
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 # declares a dependency on GoogleTest which is downloaded from GitHub
 include(FetchContent)
@@ -83,17 +83,17 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   set(WANT_COVERAGE OFF)
 endif()
 
-# if(WANT_COVERAGE)
-#   message("Enabling coverage")
-#   list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
-#   include(CodeCoverage)
-#   # The following line come from cmake-modules/CodeCoverage.cmake
-#   append_coverage_compiler_flags() # will add "--coverage" compilation flag
-#   # Exclude certain directories from coverage analysis
-#   set(COVERAGE_EXCLUDES
-#     ${PROJECT_BINARY_DIR}
-#     )
-# endif()
+if(WANT_COVERAGE)
+  message("Enabling coverage")
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+  include(CodeCoverage)
+  # The following line come from cmake-modules/CodeCoverage.cmake
+  append_coverage_compiler_flags() # will add "--coverage" compilation flag
+  # Exclude certain directories from coverage analysis
+  set(COVERAGE_EXCLUDES
+    ${PROJECT_BINARY_DIR}
+    )
+endif()
 
 #
 # c++ Boilerplate Modification Starts Here
@@ -111,17 +111,17 @@ doxygen_add_docs(docs           # target name
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/libs
   ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_SOURCE_DIR}/Perception_Task
+  # ${PROJECT_SOURCE_DIR}/Perception_Task
   )
 
 # create targets for building code coverage reports
 if(WANT_COVERAGE)
   # unit test coverage:
-  setup_target_for_coverage_lcov ( # use lcov to generate coverage report
-    NAME test_coverage          # target name
+  setup_target_for_coverage_lcov ( # use lcov to generate coverage report    
+  NAME test_coverage          # target name
     EXECUTABLE ctest     # what to run inside the build directory?
     EXCLUDE
-      "app/main.cpp"     # Unit test does not run app, so don't analyze it
+      # "app/main.cpp"     # Unit test does not run app, so don't analyze it
       "*gtest*"          # Don't analyze googleTest code
       "/usr/include/*"   # Don't analyze system headers
       "Perception_Task/perception_task.cpp"  # Exclude from unit test coverage if needed
