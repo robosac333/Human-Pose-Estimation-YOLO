@@ -19,9 +19,9 @@ class LoadModelTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.weights";
-        configPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.cfg";
-        classesPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/coco.names";
+        modelPath =  "yolo_classes/yolov3.weights";
+        configPath =  "yolo_classes/yolov3.cfg";
+        classesPath =  "yolo_classes/coco.names";
     std::cout << "Calling Fixture SetUp\n";
     }
 
@@ -91,10 +91,10 @@ class detectHumanTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.weights";
-        configPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.cfg";
-        classesPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/coco.names";
-        image_path = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/bus.jpg";
+        modelPath =  "yolo_classes/yolov3.weights";
+        configPath =  "yolo_classes/yolov3.cfg";
+        classesPath =  "yolo_classes/coco.names";
+        image_path = "yolo_classes/bus.jpg";
         
         // Load test image in SetUp
         image = cv::imread(image_path);
@@ -154,10 +154,10 @@ class TrackerTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.weights";
-        configPath = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.cfg";
-        classesPath = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/coco.names";
-        image_path = "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/bus.jpg";
+        modelPath = "yolo_classes/yolov3.weights";
+        configPath = "yolo_classes/yolov3.cfg";
+        classesPath = "yolo_classes/coco.names";
+        image_path = "yolo_classes/bus.jpg";
         
         // Load test image
         image = cv::imread(image_path);

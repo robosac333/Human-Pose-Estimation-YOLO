@@ -20,18 +20,6 @@ void Tracker::Track(const cv::Mat& Image) {
     
     // Update tracking information
     updateTrackers(detections, Image);
-
-    // // Draw bounding boxes and location information for detected humans
-    // for (const auto& detection : detections) {
-    //     cv::rectangle(Image, detection, cv::Scalar(255, 255, 0), 2);
-    //     cv::Point3f location = getLocation(detection);
-    //     cv::putText(Image,
-    //                "Human: (" + std::to_string(int(location.x)) + ", " +
-    //                            std::to_string(int(location.y)) + ", " +
-    //                            std::to_string(int(location.z)) + ")",
-    //                cv::Point(detection.x, detection.y - 10),
-    //                cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);
-    // }
 }
 
 void Tracker::updateTrackers(const std::vector<cv::Rect>& detections, const cv::Mat& Image) {
