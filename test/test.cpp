@@ -19,9 +19,12 @@ class LoadModelTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath =  "../yolo_classes/yolov3.weights";
-        configPath =  "../yolo_classes/yolov3.cfg";
-        classesPath =  "../yolo_classes/coco.names";
+        const char* projectRoot = PROJECT_ROOT;
+        
+        // Setup test paths using project root
+        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
     std::cout << "Calling Fixture SetUp\n";
     }
 
@@ -91,10 +94,14 @@ class detectHumanTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath =  "../yolo_classes/yolov3.weights";
-        configPath =  "../yolo_classes/yolov3.cfg";
-        classesPath =  "../yolo_classes/coco.names";
-        image_path = "../yolo_classes/bus.jpg";
+        const char* projectRoot = PROJECT_ROOT;
+        
+        // Setup test paths using project root
+        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
+        image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
+        
         
         // Load test image in SetUp
         image = cv::imread(image_path);
@@ -154,10 +161,13 @@ class TrackerTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Setup test paths
-        modelPath = "../yolo_classes/yolov3.weights";
-        configPath = "../yolo_classes/yolov3.cfg";
-        classesPath = "../yolo_classes/coco.names";
-        image_path = "../yolo_classes/bus.jpg";
+        const char* projectRoot = PROJECT_ROOT;
+        
+        // Setup test paths using project root
+        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
+        image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
         
         // Load test image
         image = cv::imread(image_path);

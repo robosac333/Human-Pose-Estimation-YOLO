@@ -1,42 +1,21 @@
-##############################################################################
-#
-# GitGub CI workflow syntax spec:
-#    https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
-#
-# CodeCov github action setup:
-#    https://github.com/codecov/codecov-action
-#
-# CodeCov badge setup:
-#    https://docs.codecov.com/docs/status-badges
-#
-# version 1.1
-##############################################################################
-
 name: Run Unit Test and Upload Coverage Report
 
 on:
-  # Triggered whenever push to main 
   push:
     branches: [ "main" ]
-
-  # Triggered whenever a pull request is created on main
   pull_request:
     branches: [ "main" ]
     types: [opened]
-
-  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
   build-run-upload:
-    # Create a container of the latest Ubuntu, other values could be
-    # ubuntu-latest, ubuntu-22.04, etc.
     runs-on: ubuntu-22.04
     
     steps:
-      # We want to use GitHub CI checkout version 3 to check out our branch
       - uses: actions/checkout@v3
-
+        with:
+          lfs: true  # Enable LFS for weights file
 
       # Cache apt packages
       - name: Cache apt packages
@@ -44,7 +23,9 @@ jobs:
         id: apt-cache
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
       # Cache OpenCV build
       - name: Cache OpenCV
@@ -52,33 +33,47 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            ~/.cache/opencv
             /usr/local/include/opencv4
             /usr/local/lib/libopencv*
             /usr/local/lib/python3/dist-packages/cv2
+            /usr/local/share/opencv4
           key: ${{ runner.os }}-opencv-4.5.4-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-opencv-4.5.4-
 
-      # Install some system pacakges
+      # Cache YOLO weights
+      - name: Cache YOLO weights
+        id: yolo-cache
+        uses: actions/cache@v3
+        with:
+          path: yolo_classes/yolov3.weights
+          key: ${{ runner.os }}-yolo-weights-v1
+          restore-keys: |
+            ${{ runner.os }}-yolo-weights-
+
+      # Install system packages only if cache missed
       - name: Install build packages and dependencies
+        if: steps.apt-cache.outputs.cache-hit != 'true'
         run: |
           sudo apt update
           sudo apt install -y software-properties-common
           sudo apt install -y doxygen lcov gcovr
           sudo apt install -y libopencv-dev python3-opencv
 
-      # Download and build OpenCV 4.5.4
+      # Build OpenCV only if cache missed
       - name: Build and Install OpenCV 4.5.4
+        if: steps.opencv-cache.outputs.cache-hit != 'true'
         run: |
-          # Download OpenCV 4.5.4
+          mkdir -p ~/.cache/opencv
+          cd ~/.cache/opencv
           wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.4.zip
           unzip opencv.zip
-          # Download OpenCV contrib modules
           wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.5.4.zip
           unzip opencv_contrib.zip
-          # Create build directory
           cd opencv-4.5.4
           mkdir build
           cd build
-          # Configure OpenCV build
           cmake -D CMAKE_BUILD_TYPE=RELEASE \
                 -D CMAKE_INSTALL_PREFIX=/usr/local \
                 -D INSTALL_PYTHON_EXAMPLES=OFF \
@@ -87,37 +82,56 @@ jobs:
                 -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.5.4/modules \
                 -D PYTHON_EXECUTABLE=/usr/bin/python3 \
                 -D BUILD_EXAMPLES=OFF ..
-          # Build and install
           make -j$(nproc)
           sudo make install
           sudo ldconfig
-          
-      # Verify OpenCV 4.5.4 installation
+
+      # Download YOLO weights only if cache missed
+      - name: Download YOLO files
+        if: steps.yolo-cache.outputs.cache-hit != 'true'
+        run: |
+          cd yolo_classes
+          wget https://pjreddie.com/media/files/yolov3.weights
+          ls -l yolov3.weights
+
       - name: Verify OpenCV installation
         run: |
           pkg-config --modversion opencv4
           python3 -c "import cv2; print('OpenCV version:', cv2.__version__)"
-      
-      - name: Download YOLO files
-        run: |
-          cd yolo_classes
-          # Download weights
-          wget https://pjreddie.com/media/files/yolov3.weights
-          # Verify file exists
-          ls -l yolov3.weights
 
-      # Build, run unit test, and generate coverage report
-      - name: Configure CMake flags and build exectables
+      # Configure and build before running tests
+      - name: Configure CMake flags and build executables
         run: |
           cmake -D WANT_COVERAGE=ON -D CMAKE_BUILD_TYPE=Debug -S ./ -B build/
-          cmake --build build/ --clean-first --target all test_coverage
+          cmake --build build/ --clean-first --target all
 
-      # Upload coverage result to CodeCov
+      - name: Debug file locations
+        run: |
+          echo "Project structure:"
+          ls -R
+          echo "YOLO files location:"
+          find . -name "yolov3*"
+          find . -name "coco.names"
+          echo "Build directory content:"
+          ls -R build/
+
+      # Run tests after build
+      - name: Run tests with verbose output
+        run: |
+          cd build
+          GTEST_COLOR=1 ctest --output-on-failure --verbose
+
+      # Generate coverage after tests pass
+      - name: Generate coverage report
+        run: |
+          cd build
+          make test_coverage
+
+      # Upload coverage results
       - name: Upload coverage result to CodeCov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{github.workspace}}/build/test_coverage.info
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)      
-          
+          fail_ci_if_error: true
+          verbose: true
