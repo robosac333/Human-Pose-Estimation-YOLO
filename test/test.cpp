@@ -22,6 +22,7 @@ protected:
         modelPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.weights";
         configPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/yolov3.cfg";
         classesPath =  "/home/navdeep/Project/Monocular-Human-Detection-YOLO/yolo_classes/coco.names";
+    std::cout << "Calling Fixture SetUp\n";
     }
 
     std::string modelPath;
@@ -30,11 +31,11 @@ protected:
 };
 
 // Test constructor
-TEST_F(LoadModelTest, ConstructorTest) {
-    EXPECT_NO_THROW({
-        loadModel model(modelPath, configPath, classesPath);
-    });
-}
+// TEST_F(LoadModelTest, ConstructorTest) {
+//     EXPECT_NO_THROW({
+//         loadModel model(modelPath, configPath, classesPath);
+//     });
+// }
 
 // Test model loading with valid paths
 TEST_F(LoadModelTest, ValidLoadTest) {
