@@ -36,7 +36,27 @@ jobs:
     steps:
       # We want to use GitHub CI checkout version 3 to check out our branch
       - uses: actions/checkout@v3
-      
+
+
+      # Cache apt packages
+      - name: Cache apt packages
+        uses: actions/cache@v3
+        id: apt-cache
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
+
+      # Cache OpenCV build
+      - name: Cache OpenCV
+        id: opencv-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include/opencv4
+            /usr/local/lib/libopencv*
+            /usr/local/lib/python3/dist-packages/cv2
+          key: ${{ runner.os }}-opencv-4.5.4-${{ hashFiles('**/CMakeLists.txt') }}
+
       # Install some system pacakges
       - name: Install build packages and dependencies
         run: |
