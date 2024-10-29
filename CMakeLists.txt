@@ -121,10 +121,12 @@ if(WANT_COVERAGE)
   NAME test_coverage          # target name
     EXECUTABLE ctest     # what to run inside the build directory?
     EXCLUDE
-      # "app/main.cpp"     # Unit test does not run app, so don't analyze it
+      "app/main.cpp"     # Unit test does not run app, so don't analyze it
       "*gtest*"          # Don't analyze googleTest code
       "/usr/include/*"   # Don't analyze system headers
-      "Perception_Task/perception_task.cpp"  # Exclude from unit test coverage if needed
+      "*_deps/*"
+      "build/*" # Exclude from unit test coverage if needed
+    DEPENDENCIES cpp-test
     )
 
   # code coverage for the app (shell-app):
@@ -133,8 +135,10 @@ if(WANT_COVERAGE)
     NAME app_coverage          # target name
     EXECUTABLE shell-app       # what to run inside the build directory?
     EXCLUDE
-    "test/test.cpp"    # App does not run unit test, so don't analyze it
-    "test/main.cpp"    # App does not run unit test, so don't analyze it
+    "test/*"    # App does not run unit test, so don't analyze it
+    "build/*"    # App does not run unit test, so don't analyze it
+    "*_deps/*"
+    DEPENDENCIES shell-app
     )
 
 endif()
