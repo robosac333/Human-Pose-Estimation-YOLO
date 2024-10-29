@@ -1,1 +1,2 @@
-yolo_classes/yolov3.weights
+yolo_classes/yolov3.weightsbuild/
+build/*
