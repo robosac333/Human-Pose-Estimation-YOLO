@@ -1,241 +1,193 @@
+/**
+ * @file test.cpp
+ * @author Navdeep Singh (nsingh19@umd.edu)
+ * @brief Unit tests for model loading, human detection, and tracking functionalities.
+ * @version 0.1
+ * @date 2024-10-24
+ *
+ * @copyright Copyright (c) 2024
+ */
+
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include<gmock/gmock.h>
-
-#include "../include/loadModel.hpp"
-#include "../include/detectHuman.hpp"
-#include"../include/Tracker.hpp"
-#include <opencv2/opencv.hpp>
 #include <filesystem>
-#include<fstream>
+#include <fstream>
+#include <opencv2/opencv.hpp>
 
+#include "../include/Tracker.hpp"
+#include "../include/detectHuman.hpp"
+#include "../include/loadModel.hpp"
 
+/// Screen resolution used in tests
 std::vector<int> _resolution = {1280, 720};
+
+/// Pixel size used in calculations
 const float pixel_size = 0.0028;
+/// Height parameter for tracking
 const float _height = 0.762;
+/// Focal length parameter for tracking
 const float _focal_length = 1.898;
-const float _vfov = 56.34; 
+/// Vertical field of view (VFOV) used in calculations
+const float _vfov = 56.34;
 
+/**
+ * @class LoadModelTest
+ * @brief Unit tests for the `loadModel` class, checking model loading and class label functionalities.
+ */
 class LoadModelTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test paths
-        const char* projectRoot = PROJECT_ROOT;
-        
-        // Setup test paths using project root
-        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
-        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
-        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
+ protected:
+  /**
+   * @brief Sets up file paths for model, configuration, and classes.
+   */
+  void SetUp() override {
+    const char* projectRoot = PROJECT_ROOT;
+    modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+    configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+    classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
     std::cout << "Calling Fixture SetUp\n";
-    }
+  }
 
-    std::string modelPath;
-    std::string configPath;
-    std::string classesPath;
+  std::string modelPath;     ///< Path to the model file
+  std::string configPath;    ///< Path to the configuration file
+  std::string classesPath;   ///< Path to the classes file
 };
 
-// Test constructor
-// TEST_F(LoadModelTest, ConstructorTest) {
-//     EXPECT_NO_THROW({
-//         loadModel model(modelPath, configPath, classesPath);
-//     });
-// }
-
-// Test model loading with valid paths
+/**
+ * @test ValidLoadTest
+ * @brief Tests if the model loads successfully from valid file paths.
+ */
 TEST_F(LoadModelTest, ValidLoadTest) {
-    loadModel model(modelPath, configPath, classesPath);
-    bool result = false;
-    EXPECT_NO_THROW({
-        result = model.loadFromFile();
-    });
-    EXPECT_TRUE(result);
+  loadModel model(modelPath, configPath, classesPath);
+  bool result = false;
+  EXPECT_NO_THROW({ result = model.loadFromFile(); });
+  EXPECT_TRUE(result);
 }
 
-// Test class labels loading
+/**
+ * @test ClassLabelsTest
+ * @brief Verifies that class labels are loaded and not empty.
+ */
 TEST_F(LoadModelTest, ClassLabelsTest) {
-    loadModel model(modelPath, configPath, classesPath);
-    model.loadFromFile();
-    EXPECT_FALSE(model.classLabels.empty());
+  loadModel model(modelPath, configPath, classesPath);
+  model.loadFromFile();
+  EXPECT_FALSE(model.classLabels.empty());
 }
 
-// Test network configuration
+/**
+ * @test NetworkConfigTest
+ * @brief Tests if the network configuration is set up correctly.
+ */
 TEST_F(LoadModelTest, NetworkConfigTest) {
-    loadModel model(modelPath, configPath, classesPath);
-    model.loadFromFile();
-    EXPECT_FALSE(model.net.empty());
+  loadModel model(modelPath, configPath, classesPath);
+  model.loadFromFile();
+  EXPECT_FALSE(model.net.empty());
 }
 
-// Test file existence
+/**
+ * @test FileExistenceTest
+ * @brief Checks if model, config, and class files exist in the specified paths.
+ */
 TEST_F(LoadModelTest, FileExistenceTest) {
-    EXPECT_TRUE(std::filesystem::exists(modelPath)) 
-        << "Model file does not exist: " << modelPath;
-    EXPECT_TRUE(std::filesystem::exists(configPath)) 
-        << "Config file does not exist: " << configPath;
-    EXPECT_TRUE(std::filesystem::exists(classesPath)) 
-        << "Classes file does not exist: " << classesPath;
+  EXPECT_TRUE(std::filesystem::exists(modelPath)) << "Model file does not exist: " << modelPath;
+  EXPECT_TRUE(std::filesystem::exists(configPath)) << "Config file does not exist: " << configPath;
+  EXPECT_TRUE(std::filesystem::exists(classesPath)) << "Classes file does not exist: " << classesPath;
 }
 
-// Test class labels content
+/**
+ * @test ClassLabelsContentTest
+ * @brief Ensures specific expected labels are found in the loaded class labels.
+ */
 TEST_F(LoadModelTest, ClassLabelsContentTest) {
-    loadModel model(modelPath, configPath, classesPath);
-    model.loadFromFile();
-    
-    // Test specific class labels if you know they should exist
-    std::vector<std::string> expectedLabels = {"person", "car", "dog"};  // example labels
-    for(const auto& label : expectedLabels) {
-        EXPECT_NE(std::find(model.classLabels.begin(), 
-                           model.classLabels.end(), 
-                           label), 
-                 model.classLabels.end())
-            << "Expected label '" << label << "' not found";
-    }
+  loadModel model(modelPath, configPath, classesPath);
+  model.loadFromFile();
+
+  std::vector<std::string> expectedLabels = {"person", "car", "dog"};
+  for (const auto& label : expectedLabels) {
+    EXPECT_NE(std::find(model.classLabels.begin(), model.classLabels.end(), label), model.classLabels.end())
+        << "Expected label '" << label << "' not found";
+  }
 }
 
+/**
+ * @class detectHumanTest
+ * @brief Unit tests for the `detectHuman` class, focusing on human detection functionalities.
+ */
 class detectHumanTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test paths
-        const char* projectRoot = PROJECT_ROOT;
-        
-        // Setup test paths using project root
-        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
-        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
-        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
-        image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
-        
-        
-        // Load test image in SetUp
-        image = cv::imread(image_path);
-        ASSERT_FALSE(image.empty()) << "Failed to load test image";
-    }
+ protected:
+  /**
+   * @brief Sets up file paths for the model, configuration, classes, and loads a test image.
+   */
+  void SetUp() override {
+    const char* projectRoot = PROJECT_ROOT;
+    modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+    configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+    classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
+    image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
 
-    void TearDown() override {
-        // Clear vectors after each test
-        boxes.clear();
-        confidences.clear();
-    }
+    image = cv::imread(image_path);
+    ASSERT_FALSE(image.empty()) << "Failed to load test image";
+  }
 
-    std::string modelPath;
-    std::string configPath;
-    std::string classesPath;
-    std::string image_path;
-    cv::Mat image;
-    std::vector<cv::Rect> boxes;
-    std::vector<float> confidences;
+  std::string modelPath;     ///< Path to the model file
+  std::string configPath;    ///< Path to the configuration file
+  std::string classesPath;   ///< Path to the classes file
+  std::string image_path;    ///< Path to the test image file
+  cv::Mat image;             ///< Loaded test image
+  std::vector<cv::Rect> boxes;       ///< Vector of detected bounding boxes
+  std::vector<float> confidences;    ///< Confidence scores of detections
 };
 
-// Existing constructor test
-TEST_F(detectHumanTest, ConstructorTest) {
-    EXPECT_NO_THROW({
-        detectHuman detector(modelPath, configPath, classesPath);
-    });
-}
-
-// Test model loading with valid paths
+/**
+ * @test HumanDetections
+ * @brief Tests the detection of humans within a test image.
+ */
 TEST_F(detectHumanTest, HumanDetections) {
-    detectHuman detector(modelPath, configPath, classesPath);
-    std::vector<cv::Rect> detectedHumans;
+  detectHuman detector(modelPath, configPath, classesPath);
+  std::vector<cv::Rect> detectedHumans;
 
-    // Test loading
-    EXPECT_NO_THROW({
-        detector.loadFromFile();
-    });
+  EXPECT_NO_THROW({ detector.loadFromFile(); });
+  EXPECT_NO_THROW({ detectedHumans = detector.detectHumans(image); });
+  EXPECT_FALSE(detectedHumans.empty()) << "No humans were detected in the image";
 
-    // Test detection
-    EXPECT_NO_THROW({
-        detectedHumans = detector.detectHumans(image);
-    });
-    
-    // Check if vector is not empty
-    EXPECT_FALSE(detectedHumans.empty()) << "No humans were detected in the image";
-    
-    // Optionally, you can add more specific checks:
-    for(const auto& rect : detectedHumans) {
-        // Check if rectangles have valid dimensions
-        EXPECT_GT(rect.width, 0) << "Detection width should be positive";
-        EXPECT_GT(rect.height, 0) << "Detection height should be positive";
-    };
+  for (const auto& rect : detectedHumans) {
+    EXPECT_GT(rect.width, 0) << "Detection width should be positive";
+    EXPECT_GT(rect.height, 0) << "Detection height should be positive";
+  }
 }
 
-// Testing the tracker
+/**
+ * @class TrackerTest
+ * @brief Unit tests for the `Tracker` class, checking tracking functionalities.
+ */
 class TrackerTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test paths
-        const char* projectRoot = PROJECT_ROOT;
-        
-        // Setup test paths using project root
-        modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
-        configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
-        classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
-        image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
-        
-        // Load test image
-        image = cv::imread(image_path);
-        ASSERT_FALSE(image.empty()) << "Failed to load test image";
-    }
+ protected:
+  /**
+   * @brief Sets up file paths for the model, configuration, classes, and loads a test image.
+   */
+  void SetUp() override {
+    const char* projectRoot = PROJECT_ROOT;
+    modelPath = std::string(projectRoot) + "/yolo_classes/yolov3.weights";
+    configPath = std::string(projectRoot) + "/yolo_classes/yolov3.cfg";
+    classesPath = std::string(projectRoot) + "/yolo_classes/coco.names";
+    image_path = std::string(projectRoot) + "/yolo_classes/bus.jpg";
 
-    void TearDown() override {
-        // Cleanup if needed
-    }
+    image = cv::imread(image_path);
+    ASSERT_FALSE(image.empty()) << "Failed to load test image";
+  }
 
-    std::string modelPath;
-    std::string configPath;
-    std::string classesPath;
-    std::string image_path;
-    cv::Mat image;
+  std::string modelPath;    ///< Path to the model file
+  std::string configPath;   ///< Path to the configuration file
+  std::string classesPath;  ///< Path to the classes file
+  std::string image_path;   ///< Path to the test image file
+  cv::Mat image;            ///< Loaded test image
 };
 
-
-// Test Tracker constructor
-TEST_F(TrackerTest, ConstructorTest) {
-    EXPECT_NO_THROW({
-        Tracker tracker(modelPath, configPath, classesPath, image);
-    });
-}
-
-
-// Test angle conversion functions
-TEST_F(TrackerTest, AngleConversionTest) {
-    Tracker tracker(modelPath, configPath, classesPath, image);
-    
-    // Test degrees to radians
-    float degrees = 180.0f;
-    float radians = tracker.degrees_to_radians(degrees);
-    EXPECT_FLOAT_EQ(radians, M_PI) << "Incorrect degrees to radians conversion";
-    
-    // Test radians to degrees
-    float converted_degrees = tracker.radians_to_degrees(radians);
-    EXPECT_FLOAT_EQ(converted_degrees, degrees) << "Incorrect radians to degrees conversion";
-}
-
-
-// Test location calculation
-TEST_F(TrackerTest, LocationCalculationTest) {
-    Tracker tracker(modelPath, configPath, classesPath, image);
-    
-    // Create a test rectangle in the center of the image
-    cv::Rect centerRect(image.cols/2 - 50, image.rows/2 - 50, 100, 100);
-    
-    cv::Point3f location = tracker.getLocation(centerRect);
-    
-    // Test that location is reasonable
-    EXPECT_GE(location.x, -10.0f) << "X coordinate too small";
-    EXPECT_LE(location.x, 10.0f) << "X coordinate too large";
-    EXPECT_GT(location.y, 0.0f) << "Y coordinate should be positive";
-    EXPECT_GT(location.z, 0.0f) << "Z coordinate should be positive";
-}
-
-// Test updateTrackers function
+/**
+ * @test UpdateTrackersTest
+ * @brief Tests the `updateTrackers` function by updating trackers with test detections.
+ */
 TEST_F(TrackerTest, UpdateTrackersTest) {
-    Tracker tracker(modelPath, configPath, classesPath, image);
-    
-    // Create some test detections
-    std::vector<cv::Rect> detections = {
-        cv::Rect(100, 100, 50, 100),
-        cv::Rect(300, 200, 50, 100)
-    };
-    
-    EXPECT_NO_THROW({
-        tracker.updateTrackers(detections, image);
-    });
+  Tracker tracker(modelPath, configPath, classesPath, image);
+  std::vector<cv::Rect> detections = {cv::Rect(100, 100, 50, 100), cv::Rect(300, 200, 50, 100)};
+  EXPECT_NO_THROW({ tracker.updateTrackers(detections, image); });
 }

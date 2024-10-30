@@ -1,9 +1,9 @@
 /**
- * @file test.cpp
+ * @file main.cpp
  * @author Navdeep Singh (nsingh19@umd.edu)
  * @brief Tests for the Human Tracker Implementation
  * @version 0.1
- * @date 2023-10-24
+ * @date 2024-10-24
  *
  * @copyright Copyright (c) 2024
  *
