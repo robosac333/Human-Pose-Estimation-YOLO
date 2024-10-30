@@ -80,6 +80,62 @@ After cloning this repository build the same
   rm -rf build/
 ```
 
+### Building for Test Coverage
+This section explains how to set up your code for test coverage reporting. You can view this information in the code coverage report by clicking the codecov badge at the top of this file. Alternatively, you can manually generate the report and view the HTML file in a web browser by executing the following commands:
+
+```sh
+# If you don't have gcovr or lcov installed, run:
+  sudo apt-get install gcovr lcov
+# Set the build type to Debug and enable coverage:
+  cmake -D WANT_COVERAGE=ON -D CMAKE_BUILD_TYPE=Debug -S ./ -B build/
+# Perform a clean compile, run unit tests, and generate the coverage report:
+  cmake --build build/ --clean-first --target all test_coverage
+# Open a web browser to view the test coverage report:
+  open build/test_coverage/index.html
+```
+Running these commands will create an index.html page in the build/test_coverage sub-directory, which you can view in your local web browser.
+
+You can also generate a code coverage report for the shell-app target instead of the unit tests. To do this, repeat the previous two steps, but target app_coverage:
+
+```sh
+# Clean compile, run the shell-app, and generate its coverage report:
+  cmake --build build/ --clean-first --target all app_coverage
+# Open a web browser to view the shell-app coverage report:
+  open build/app_coverage/index.html
+```
+
+This will produce an index.html page in the build/app_coverage sub-directory that can be viewed in a local web browser.
+
+### Google Coding Style
+
+To check the conformity of your code to the Google C++ style guide, examine the results/cpplint_output.txt and results/cpplint_output.png files. These files will show the output from running the Cpplint tool on this project. Ideally, there should be no issues or problems, and all files should be processed successfully.
+
+You can also perform a self-check by executing the following command from the highest-level directory of the project:
+
+```sh
+# Install Cpplint (ignore this step if it's already installed):
+  sudo apt install cpplint
+# Check code style conformity using Cpplint:
+  cpplint --filter="-legal/copyright" $( find . -name *.cpp | grep -vE -e "^./build/" )
+```
+
+Running the above command should yield the same output as found in the results/cpplint_output.txt file.
+
+### Static Code Analysis
+
+To perform static code analysis on this project, refer to the results/cppcheck_output.txt and results/cppcheck_output.png files to see the output from the Cppcheck tool. You should not encounter any issues, and all files should be checked successfully.
+
+You can also verify this by running the following command in the highest-level directory of the project:
+
+```sh
+# Install Cppcheck (ignore this step if it's already installed):
+  sudo apt install cppcheck
+# Perform static code analysis using Cppcheck:
+  cppcheck --enable=all --std=c++11 --suppress=missingInclude --suppress=unusedFunction $( find . -name *.cpp | grep -vE -e "^./build/" )
+```
+
+Executing this command should produce the same output as that found in the results/cppcheck_output.txt file.
+
 HALO relies on the OpenCV library for computer vision functionalities and tools [details available here](https://github.com/opencv/opencv). It also employs a YOLO v3 model (originally developed by Joseph Redmon; more information [here](https://pjreddie.com/darknet/yolo/)). This deep-learning-based object detection model enables HALO to identify humans within a video feed, from which it then performs tracking. The YOLO v3 model is integrated from a PyTorch YOLO v3 configuration.
 
 OpenCV and YOLO form the foundation of HALO’s tracking mechanism. OpenCV facilitates critical image processing tasks, while YOLO v3, as a benchmark object detection model, enables HALO to capture accurate human coordinates efficiently, offering flexible and reliable detection outputs. HALO’s architecture makes it versatile for object tracking, especially for humanoid robots requiring awareness in complex environments.
