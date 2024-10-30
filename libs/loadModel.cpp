@@ -1,7 +1,8 @@
 /**
  * @file loadModel.cpp
  * @author Sachin Jadhav (sjd3333@umd.edu)
- * @brief Implementation of the loadModel class for loading neural network models and class labels.
+ * @brief Implementation of the loadModel class for loading neural network
+ * models and class labels.
  * @version 0.1
  * @date 2024-10-30
  */
@@ -28,13 +29,15 @@ loadModel::loadModel(const std::string& modelPath,
       classes_file_path(classesPath) {}
 
 /**
- * @brief Loads the neural network model and class labels from the specified files.
+ * @brief Loads the neural network model and class labels from the specified
+ * files.
  *
- * Loads the model from Darknet configuration and model files, sets backend 
+ * Loads the model from Darknet configuration and model files, sets backend
  * and target preferences, and reads class labels from the provided file.
  * Initializes the camera matrix and distortion coefficients.
  *
- * @return true if the model and labels were loaded successfully, false otherwise.
+ * @return true if the model and labels were loaded successfully, false
+ * otherwise.
  *
  * @throws std::runtime_error if the model or class labels cannot be loaded.
  */
@@ -67,7 +70,8 @@ bool loadModel::loadFromFile() {
     throw std::runtime_error(errorMsg.str());
   }
 
-  // Set up camera matrix with intrinsic parameters and initialize distortion coefficients to zero
+  // Set up camera matrix with intrinsic parameters and initialize distortion
+  // coefficients to zero
   Camera_Matrix = (cv::Mat_<double>(3, 3) << 1000.0, 0.0, 320.0, 0.0, 1000.0,
                    240.0, 0.0, 0.0, 1.0);
 

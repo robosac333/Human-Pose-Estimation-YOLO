@@ -1,7 +1,8 @@
 /**
  * @file Tracker.cpp
  * @author Sachin Jadhav (sjd3333@umd.edu)
- * @brief Implementation of the Tracker class methods for tracking humans in images.
+ * @brief Implementation of the Tracker class methods for tracking humans in
+ * images.
  * @version 0.1
  * @date 2024-10-30
  */
@@ -24,7 +25,8 @@ Tracker::Tracker(const std::string& modelPath, const std::string& configPath,
 
 /**
  * @brief Tracks humans in the given image frame.
- * @param Image The current image frame for detecting and updating human trackers.
+ * @param Image The current image frame for detecting and updating human
+ * trackers.
  */
 void Tracker::Track(const cv::Mat& Image) {
   // Detect humans in current frame
@@ -100,7 +102,8 @@ float Tracker::radians_to_degrees(float radians) {
 }
 
 /**
- * @brief Calculates the 3D location of a detected object based on its bounding box.
+ * @brief Calculates the 3D location of a detected object based on its bounding
+ * box.
  * @param detection Bounding box of the detected object.
  * @return 3D coordinates (x, y, z) of the object in the scene.
  */

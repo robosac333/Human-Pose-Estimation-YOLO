@@ -1,7 +1,8 @@
 /**
  * @file detectHuman.cpp
  * @author Sachin Jadhav (sjd3333@umd.edu)
- * @brief Implementation of the detectHuman class methods for detecting humans in images.
+ * @brief Implementation of the detectHuman class methods for detecting humans
+ * in images.
  * @version 0.1
  * @date 2024-10-30
  */
@@ -30,7 +31,7 @@ detectHuman::detectHuman(const std::string& modelPath,
  * @brief Detects humans in the provided image.
  *
  * Converts the image into a blob, forwards it through the neural network,
- * and retrieves bounding boxes for detected humans. 
+ * and retrieves bounding boxes for detected humans.
  * Utilizes non-maxima suppression to refine detections.
  *
  * @param Image The image frame in which to detect humans.

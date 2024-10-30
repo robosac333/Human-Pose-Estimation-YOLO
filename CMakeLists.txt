@@ -100,7 +100,6 @@ endif()
 # ref: https://iamsorush.com/posts/cpp-cmake-essential/
 # ref: https://cmake.org/cmake/help/latest/guide/tutorial/index.html
 #
-# add_subdirectory(libs)
 add_subdirectory(app)
 add_subdirectory(test)
 add_subdirectory(libs)
@@ -111,7 +110,6 @@ doxygen_add_docs(docs           # target name
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/libs
   ${PROJECT_SOURCE_DIR}/include
-  # ${PROJECT_SOURCE_DIR}/Perception_Task
   )
 
 # create targets for building code coverage reports

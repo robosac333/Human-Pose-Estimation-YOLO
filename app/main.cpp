@@ -1,7 +1,10 @@
-#include <chrono>  // Add this for time measurement
-#include <opencv2/opencv.hpp>
+// C++ system headers (alphabetical order)
 #include <string>
 
+// Third-party library headers
+#include <opencv2/opencv.hpp>
+
+// Other/local headers (alphabetical order)
 #include "Tracker.hpp"
 #include "loadModel.hpp"
 
@@ -28,15 +31,13 @@ int main() {
   tracker.loadFromFile();
 
   // Get start time
-  auto start_time = std::chrono::steady_clock::now();
+  int64_t start_time = cv::getTickCount();
   const int DURATION_SECONDS = 8;
 
   while (true) {
     // Check elapsed time
-    auto current_time = std::chrono::steady_clock::now();
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(
-                            current_time - start_time)
-                            .count();
+    int64_t current_time = cv::getTickCount();
+    double elapsed_time = (current_time - start_time) / cv::getTickFrequency();
 
     // Stop after DURATION_SECONDS
     if (elapsed_time >= DURATION_SECONDS) {

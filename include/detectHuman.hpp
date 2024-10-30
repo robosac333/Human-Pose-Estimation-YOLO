@@ -20,9 +20,10 @@
  * @class detectHuman
  * @brief Class for detecting humans in images using a pre-trained model.
  *
- * The detectHuman class is derived from the loadModel class and is responsible for
- * performing human detection on a given image. It provides methods to load a model,
- * detect humans, and store the results as bounding boxes and confidence scores.
+ * The detectHuman class is derived from the loadModel class and is responsible
+ * for performing human detection on a given image. It provides methods to load
+ * a model, detect humans, and store the results as bounding boxes and
+ * confidence scores.
  */
 class detectHuman : public loadModel {
  public:
@@ -42,12 +43,12 @@ class detectHuman : public loadModel {
    */
   std::vector<cv::Rect> detectHumans(const cv::Mat& Image);
 
-  /** 
+  /**
    * @brief Vector of bounding boxes for detected humans.
    */
   std::vector<cv::Rect> boxes;
 
-  /** 
+  /**
    * @brief Vector of confidence scores corresponding to each detected human.
    */
   std::vector<float> confidences;
