@@ -79,6 +79,11 @@ After cloning this repository build the same
 # Clean and start over:
   rm -rf build/
 ```
+
+HALO relies on the OpenCV library for computer vision functionalities and tools [details available here](https://github.com/opencv/opencv). It also employs a YOLO v3 model (originally developed by Joseph Redmon; more information [here](https://pjreddie.com/darknet/yolo/)). This deep-learning-based object detection model enables HALO to identify humans within a video feed, from which it then performs tracking. The YOLO v3 model is integrated from a PyTorch YOLO v3 configuration.
+
+OpenCV and YOLO form the foundation of HALO’s tracking mechanism. OpenCV facilitates critical image processing tasks, while YOLO v3, as a benchmark object detection model, enables HALO to capture accurate human coordinates efficiently, offering flexible and reliable detection outputs. HALO’s architecture makes it versatile for object tracking, especially for humanoid robots requiring awareness in complex environments.
+
 ## Phase 1
 In Phase 1 of the project, we set up the directory structure, create class headers and implementation. This phase also includes configuring GitHub Continuous Integration (CI), setting up Code Coverage with Codecov, and adding an MIT license along with their respective badges. All tasks will be completed using pair programming with a test-driven development (TDD) approach, following the Agile Iterative Process (AIP) software development model.
 
@@ -95,7 +100,7 @@ The quad chart, found at Documentation/Phase0_Initial/QuadChart.pdf, summarizes 
 
 Additionally, a brief video is embedded below, providing an overview of the project, including details from the report and quad chart. To view the video directly, click on the image below 
 
-[![Video]("https://i9.ytimg.com/vi_webp/ejj0KuOoPAQ/mqdefault.webp?v=67226555&sqp=COTJibkG&rs=AOn4CLDclj5uctrSXVySHKOsw5LqHJt-dQ")](https://youtu.be/ejj0KuOoPAQ?feature=shared)
+[![Video](https://i9.ytimg.com/vi_webp/ejj0KuOoPAQ/mqdefault.webp?v=67226555&sqp=COTJibkG&rs=AOn4CLDclj5uctrSXVySHKOsw5LqHJt-dQ)](https://youtu.be/ejj0KuOoPAQ?feature=shared)
 
 ### References
 - [YOLO V3 weights model source](https://www.kaggle.com/datasets/shivam316/yolov3-weights)
