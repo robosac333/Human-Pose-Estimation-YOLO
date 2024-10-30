@@ -17,62 +17,25 @@ jobs:
         with:
           lfs: true  # Enable LFS for weights file
 
-      # Cache apt packages
-      - name: Cache apt packages
-        uses: actions/cache@v3
-        id: apt-cache
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
-      # Cache OpenCV build
-      - name: Cache OpenCV
-        id: opencv-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/opencv
-            /usr/local/include/opencv4
-            /usr/local/lib/libopencv*
-            /usr/local/lib/python3/dist-packages/cv2
-            /usr/local/share/opencv4
-          key: ${{ runner.os }}-opencv-4.5.4-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-opencv-4.5.4-
-
-      # Cache YOLO weights
-      - name: Cache YOLO weights
-        id: yolo-cache
-        uses: actions/cache@v3
-        with:
-          path: yolo_classes/yolov3.weights
-          key: ${{ runner.os }}-yolo-weights-v1
-          restore-keys: |
-            ${{ runner.os }}-yolo-weights-
-
-      # Install system packages only if cache missed
+      # Install system packages
       - name: Install build packages and dependencies
-        if: steps.apt-cache.outputs.cache-hit != 'true'
         run: |
           sudo apt update
           sudo apt install -y software-properties-common
           sudo apt install -y doxygen lcov gcovr
           sudo apt install -y libopencv-dev python3-opencv
 
-      # Build OpenCV only if cache missed
+      # Build OpenCV
       - name: Build and Install OpenCV 4.5.4
-        if: steps.opencv-cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p ~/.cache/opencv
           cd ~/.cache/opencv
           wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.4.zip
-          unzip opencv.zip
           wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.5.4.zip
-          unzip opencv_contrib.zip
+          unzip -o opencv.zip
+          unzip -o opencv_contrib.zip
           cd opencv-4.5.4
-          mkdir build
+          mkdir -p build
           cd build
           cmake -D CMAKE_BUILD_TYPE=RELEASE \
                 -D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -86,9 +49,8 @@ jobs:
           sudo make install
           sudo ldconfig
 
-      # Download YOLO weights only if cache missed
+      # Download YOLO files
       - name: Download YOLO files
-        if: steps.yolo-cache.outputs.cache-hit != 'true'
         run: |
           cd yolo_classes
           wget https://pjreddie.com/media/files/yolov3.weights
@@ -99,7 +61,7 @@ jobs:
           pkg-config --modversion opencv4
           python3 -c "import cv2; print('OpenCV version:', cv2.__version__)"
 
-      # Configure and build before running tests
+      # Configure and build
       - name: Configure CMake flags and build executables
         run: |
           cmake -D WANT_COVERAGE=ON -D CMAKE_BUILD_TYPE=Debug -S ./ -B build/
@@ -115,13 +77,13 @@ jobs:
           echo "Build directory content:"
           ls -R build/
 
-      # Run tests after build
+      # Run tests
       - name: Run tests with verbose output
         run: |
           cd build
           GTEST_COLOR=1 ctest --output-on-failure --verbose
 
-      # Generate coverage after tests pass
+      # Generate coverage
       - name: Generate coverage report
         run: |
           cd build
