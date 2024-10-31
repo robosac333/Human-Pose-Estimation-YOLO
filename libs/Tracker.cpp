@@ -50,14 +50,14 @@ void Tracker::updateTrackers(const std::vector<cv::Rect>& detections,
     cv::Rect trackedRect;
     if ((*it)->update(Image, trackedRect)) {
       // Draw tracking information for successful trackers
-      cv::rectangle(Image, trackedRect, cv::Scalar(255, 0, 0), 2);
+      cv::rectangle(Image, trackedRect, cv::Scalar(255, 255, 0), 2);
       cv::Point3f location = getLocation(trackedRect);
       cv::putText(Image,
                   "Tracked: (" + std::to_string(location.x) + ", " +
                       std::to_string(location.y) + ", " +
                       std::to_string(location.z) + ")",
                   cv::Point(trackedRect.x, trackedRect.y - 10),
-                  cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 2);
+                  cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 0), 2);
       ++it;
     } else {
       it = trackers.erase(it);
@@ -116,9 +116,9 @@ cv::Point3f Tracker::getLocation(const cv::Rect& detection) {
 
   std::vector<int> _resolution = {1280, 720};
   const float pixel_size = 0.0028;
-  const float _height = 0.762;
+  const float _height = 0.962;
   const float _focal_length = 1.898;
-  const float _vfov = 56.34;
+  const float _vfov = 90.34;
 
   float offset_from_center =
       (current_pixel.y - (static_cast<float>(_resolution[1]) / 2)) * pixel_size;
@@ -126,8 +126,9 @@ cv::Point3f Tracker::getLocation(const cv::Rect& detection) {
   float dip_angle = (_vfov / 2) - radians_to_degrees(std::atan2(
                                       (offset_from_center), (_focal_length)));
 
-  float z_min_plane =
-      _height / tan(degrees_to_radians((_vfov / 2) - dip_angle));
+  std :: cout << dip_angle;
+
+  float z_min_plane =(_height * 10)/ tan(degrees_to_radians((_vfov / 2) + dip_angle)) ;
 
   float x_from_center = (current_pixel.x - 640) * 2.8;
 

@@ -140,6 +140,8 @@ HALO relies on the OpenCV library for computer vision functionalities and tools 
 
 OpenCV and YOLO form the foundation of HALO’s tracking mechanism. OpenCV facilitates critical image processing tasks, while YOLO v3, as a benchmark object detection model, enables HALO to capture accurate human coordinates efficiently, offering flexible and reliable detection outputs. HALO’s architecture makes it versatile for object tracking, especially for humanoid robots requiring awareness in complex environments.
 
+Please find the links to the video [here](https://youtu.be/GZoQa9Iq5oc?feature=shared) and the Sprint Planning and Review for our AIP Process [here](https://docs.google.com/document/d/1Bdwlqd9L5AySK-WD6bGSKijK-vkx62e66hNNi99mb8s/edit?pli=1&tab=t.0). The updated Product Backlog for the Phase 2 can be found [here](https://docs.google.com/spreadsheets/d/1ghUaM4df8IqF__fV75jPtsduJesjbfTFdYCTwERmi4M/edit?usp=sharing)
+
 ## Phase 1
 In Phase 1 of the project, we set up the directory structure, create class headers and implementation. This phase also includes configuring GitHub Continuous Integration (CI), setting up Code Coverage with Codecov, and adding an MIT license along with their respective badges. All tasks will be completed using pair programming with a test-driven development (TDD) approach, following the Agile Iterative Process (AIP) software development model.
 

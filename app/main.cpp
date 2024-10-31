@@ -32,7 +32,7 @@ int main() {
 
   // Get start time
   int64_t start_time = cv::getTickCount();
-  const int DURATION_SECONDS = 8;
+  const int DURATION_SECONDS = 500;
 
   while (true) {
     // Check elapsed time

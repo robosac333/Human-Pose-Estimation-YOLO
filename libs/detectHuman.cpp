@@ -82,7 +82,7 @@ std::vector<cv::Rect> detectHuman::detectHumans(const cv::Mat& Image) {
 
   // Perform Non-Maximum Suppression to filter overlapping boxes
   std::vector<int> indices;
-  cv::dnn::NMSBoxes(boxes, confidences, 0.5, 0.4, indices);
+  cv::dnn::NMSBoxes(boxes, confidences, 0.7, 0.4, indices);
 
   // Gather final detections after suppression
   std::vector<cv::Rect> detectedHumans;
