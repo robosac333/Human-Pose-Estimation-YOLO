@@ -152,7 +152,7 @@ In Phase 1 of the project, we set up the directory structure, create class heade
 ## Phase 0
 Phase 0 focuses on the project proposal and provides information about the Agile Iterative Process (AIP) model to be used for software development throughout the project.
 
-The Phase 0 project report, located at Documentation/Phase0_Initial/Project Proposal Group 3.pdf , outlines a comprehensive plan and vision for the project, detailing the implementation strategies. It covers all the elements of a standard software development plan, offering an in-depth analysis.
+The Phase 0 project report, located [here](https://docs.google.com/document/d/16jI77T4_1Mh9JJJpJmIrVLOkXnPECacXB7AYQt7YNdw/edit?usp=sharing) , outlines a comprehensive plan and vision for the project, detailing the implementation strategies. It covers all the elements of a standard software development plan, offering an in-depth analysis.
 
 The quad chart, found at Documentation/Phase0_Initial/QuadChart.pdf, summarizes key aspects of the project, including the product, stakeholders, capabilities, and success criteria. This chart is a crucial component of the AIP methodology, which will guide the project’s progression.
 
